@@ -33,20 +33,20 @@ Lets get into action and see how all of these work.
 ## Deploy Jfrog Artifactory into Kubernetes
 
 The best approach to easily get Artifactory into kubernetes is to use helm.
-
 1. Search for an official helm chart for Artifactory on [Artifact Hub](https://artifacthub.io/)
 
-<img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/search-artifactory-on-artifact-hub.png" width="936px" height="550px">
+![](./images/search-artifactory-on-artifact-hub.png)
 2. Click on **See all results**
+
 3. Use the filter checkbox on the left to limit the return data. As you can see in the image below, "Helm" is selected. In some cases, you might select "Official". Then click on the first option from the result.
 
-<img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/Select-artifactory-chart.png" width="936px" height="550px">
+![](./images/Select-artifactory-chart.png)
 4. Review the Artifactory page
 
-<img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/Artifactory-helm-page.png" width="936px" height="550px">
+![](./images/Artifactory-helm-page.png)
 5. Click on the install menu on the right to see the installation commands.
    
-    <img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/click-install.png" width="936px" height="550px">
+![](./images/click-install.png)
 6. Add the jfrog remote repository on your laptop/computer
 
 ```
@@ -100,8 +100,10 @@ Congratulations. You have just deployed JFrog Artifactory!
 
 - We have used `upgrade --install` flag here instead of `helm install artifactory jfrog/artifactory` This is a better practice, especially when developing CI pipelines for helm deployments. It ensures that helm does an upgrade if there is an existing installation. But if there isn't, it does the initial install. With this strategy, the command will never fail. It will be smart enough to determine if an upgrade or fresh installation is required.
 - The helm chart version to install is very important to specify. So, the version at the time of writing may be different from what you will see from Artifact Hub. So, replace the version number to the desired. You can see all the versions by clicking on "see all" as shown in the image below.
-  <img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/click-versions.png" width="936px" height="550px">
-  <img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/see-versions.png" width="936px" height="550px">
+
+![](./images/click-versions.png)
+
+![](./images/see-versions.png)
 
 The output from the installation already gives some Next step directives.
 
@@ -111,9 +113,12 @@ Lets break down the first *Next Step*.
 
 1. The artifactory helm chart comes bundled with the Artifactory software, a PostgreSQL database and an Nginx proxy which it uses to configure routes to the different capabilities of Artifactory. Getting the pods after some time, you should see something like the below.
 
-     <img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/pods.png" width="936px" height="550px">
+![](./images/pods.png)
+
 2. Each of the deployed application have their respective services. This is how you will be able to reach either of them.
-     <img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/services.png" width="936px" height="550px">
+
+![](./images/services.png)
+
 3. Notice that, the Nginx Proxy has been configured to use the service type of `LoadBalancer`. Therefore, to reach Artifactory, we will need to go through the Nginx proxy's service. Which happens to be a load balancer created in the cloud provider. Run the `kubectl` command to retrieve the Load Balancer URL.
    
    ```
@@ -122,10 +127,11 @@ Lets break down the first *Next Step*.
    
 4. Copy the URL and paste in the browser
    
-    <img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/jfrog-page.png" width="936px" height="550px">
+![](./images/jfrog-page.png)
+
 5. The default username is `admin` 
 6. The default password is `password`
-<img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/jfrog-getting-started.png" width="936px" height="550px">
+![](./images/jfrog-getting-started.png)
 
 ### How the Nginx URL for Artifactory is configured in Kubernetes
 
@@ -134,20 +140,33 @@ Without clicking further on the **Get Started** page, lets dig a bit more into K
 Helm uses the `values.yaml` file to set every single configuration that the chart has the capability to configure. THe best place to get started with an off the shelve chart from artifacthub.io is to get familiar with the `DEFAULT VALUES`
 
 
-- click on the `DEFAULT VALUES` section on Artifact hub 
-   <img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/click-default-values.png" width="936px" height="550px">
+- click on the `DEFAULT VALUES` section on Artifact hub
+
+![](./images/click-default-values.png)
+
 - Here you can search for key and value pairs
-   <img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/search-values.png" width="936px" height="550px">
-- For example, when you type `nginx` in the search bar, it shows all the configured options for the nginx proxy. 
-   <img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/nginx-values.png" width="936px" height="550px">
+
+![](./images/search-values.png)
+- For example, when you type `nginx` in the search bar, it shows all the configured options for the nginx proxy.
+
+![](./images/nginx-values.png)
+
 - selecting `nginx.enabled` from the list will take you directly to the configuration in the YAML file.
-    <img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/nginx-values-yaml.png" width="936px" height="550px">
+
+![](./images/nginx-values-yaml.png)
+
 - Search for `nginx.service` and select `nginx.service.type`
-     <img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/nginx-service.png" width="936px" height="550px">
+
+![](./images/nginx-service.png)
+
 - You will see the confired type of Kubernetes service for Nginx. As you can see, it is `LoadBalancer` by default
-     <img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/nginx-service-type.png" width="936px" height="550px">
+
+![](./images/nginx-service-type.png)
+
 - To work directly with the `values.yaml` file, you can download the file locally by clicking on the download icon.
-   <img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/download-values.png" width="936px" height="550px">
+
+![](./images/download-values.png)
+
 ### Is the Load Balancer Service type the Ideal configuration option to use in the Real World?
 
 Setting the service type to **Load Balancer** is the easiest way to get started with exposing applications running in kubernetes externally. But provissioning load balancers for each application can become very expensive over time, and more difficult to manage. Especially when tens or even hundreds of applications are deployed.
@@ -169,7 +188,8 @@ An ingress is an API object that manages external access to the services in a ku
 
 Here is a simple example where an Ingress sends all its traffic to one Service:
 
-<img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/ingress.svg" width="936px" height="550px">
+![](./images/ingress.svg)
+
 *image credit:* kubernetes.io
 
 An ingress resource for Artifactory would like like below
@@ -280,7 +300,7 @@ The `ingress-nginx-controller` service that was created is of the type `LoadBala
 
 If you go ahead to AWS console, copy the address in the **EXTERNAL-IP** column, and search for the loadbalancer, you will see an output like below.
 
-<img src="(https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/ingress-classic-load-balancer.png" width="936px" height="550px">
+![](./images/ingress-classic-load-balancer.png)
 
 5. Check the IngressClass that identifies this ingress controller.
 
@@ -297,7 +317,8 @@ nginx   k8s.io/ingress-nginx   <none>       105s
 
 Now, it is time to configure the ingress so that we can route traffic to the Artifactory internal service, through the ingress controller's load balancer.
 
-<img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/ingress.svg" width="936px" height="550px">
+![](./images/ingress.svg)
+
 Notice the `spec` section with the configuration that selects the ingress controller using the **ingressClassName** 
 
 ```
@@ -340,9 +361,10 @@ Now, take note of
 
 If anyone were to visit the tool, it would be very inconvenient sharing the long load balancer address. Ideally, you would create a DNS record that is human readable and can direct request to the balancer. This is exactly what has been configured in the ingress object `- host: "tooling.artifactory.sandbox.svc.darey.io"` but without a DNS record, there is no way that host address can reach the load balancer.
 
-The `sandbox.svc.darey.io` part of the domain is the configured **HOSTED ZONE** in AWS. So you will need to configure Hosted Zone in AWS console or as part of your infrastructure as code using terraform. 
+The `sandbox.svc.darey.io` part of the domain is the configured **HOSTED ZONE** in AWS. So you will need to configure Hosted Zone in AWS console or as part of your infrastructure as code using terraform.
 
-<img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/hosted-zone.png" width="936px" height="550px">
+![](./images/hosted-zone.png)
+
 If you purchased the domain directly from AWS, the hosted zone will be automatically configured for you. But if your domain is registered with a different provider such as **freenon** or **namechaep**, you will have to create the hosted zone and update the name servers.
 
 ### Create Route53 record
@@ -353,23 +375,28 @@ Within the hosted zone is where all the necessary DNS records will be created. S
 
 1. Select the **HOSTED ZONE** you wish to use, and click on the create record button
    
-  <img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/create-r53-record-1.png" width="936px" height="550px">
+![](./images/create-r53-record-1.png)
+
 2. Add the subdomain `tooling.artifactory`, and select the record type `CNAME`
-  <img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/create-r53-record--cname.png" width="936px" height="550px">
+
+![](./images/create-r53-record--cname.png)
+
 3. Successfully created record
-   <img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/create-r53-record-cname-2.png" width="936px" height="550px">
+![](./images/create-r53-record-cname-2.png.png)
+
 4. Confirm that the DNS record has been properly propergated. Visit https://dnschecker.org and check the record. Ensure to select CNAME. The search should return green ticks for each of the locations on the left.
-   ![](https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/dns-checker.png)
+
+![](https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/dns-checker.png)
 
 #### **AWS Alias Method**
 
 1. In the create record section, type in the record name, and toggle the `alias` button to enable an alias. An alias is of the `A` DNS record type which basically routes directly to the load balancer. In the `choose endpoint` bar, select `Alias to Application and Classic Load Balancer`
  
-  <img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/create-r53-record-alias-1.png" width="936px" height="550px">
+![](./images/create-r53-record-alias-1.png)
 
 2. Select the region and the load balancer required. You will not need to type in the load balancer, as it will already populate.
 
-  <img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/create-r53-record-alias-2.png" width="936px" height="550px">
+![](./images/create-r53-record-alias-2.png)
 
 For detailed read on selecting between CNAME and Alias based records, read the [official documentation](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resource-record-sets-choosing-alias-non-alias.html)
 
@@ -379,23 +406,28 @@ So far, we now have an application running in Kubernetes that is also accessible
 
 Using Chrome browser will show something like the below. It shows that the site is indeed reachable, but insecure. This is because Chrome browsers do not load insecure sites by default. It is insecure because it either does not have a trusted TLS/SSL certificate, or it doesn't have any at all.
 
-<img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/insecure-web.png" width="936px" height="550px">
+![](./images/insecure-web.png)
+
 Nginx Ingress Controller does configure a default TLS/SSL certificate. But it is not trusted because it is a self signed certificate that browsers are not aware of.
 
 To confirm this,
 
 1. Click on the **Not Secure** part of the browser.
    
-<img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/insecure-web-2.png" width="936px" height="550px">
+![](./images/insecure-web-2.png)
+
 2. Select the **Certificate is not valid** menu
-    <img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/insecure-web-3.png" width="936px" height="550px">
+
+![](./images/insecure-web-3.png)
+
 3. You will see the details of the certificate. There you can confirm that yes indeed there is encryption configured for the traffic, the browser is just not cool with it.
     
-   <img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/insecure-web-4.png" width="936px" height="550px">
+![](./images/insecure-web-4.png)
+
 Now try another browser. For example Internet explorer or Safari
 
-<img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/insecure-web-5.png" title="Safari" width="936px" height="550px">
-<img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/insecure-web-6.png" title="Microsoft Edge" width="936px" height="550px">
+![](./images/insecure-web-5.png)
+![](./images/insecure-web-6.png)
 
 
 ### Explore Artifactory Web UI
@@ -431,42 +463,44 @@ Congratulations. You have just deployed JFrog Artifactory!
 ```
 
 2. Insert the username and password to load the Get Started page
-  <img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/artifactory-get-started-1.png" width="936px" height="550px">
+
+![](./images/artifactory-get-started-1.png)
 
 3. Reset the admin password
     
-    <img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/artifactory-get-started-2.png" width="936px" height="550px"> 
+![](./images/artifactory-get-started-2.png)
 
 4. Activate the Artifactory License. You will need to purchase a license to use Artifactory enterprise features. 
     
-   <img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/artifactory-get-started-3.png" width="936px" height="550px">
+![](./images/artifactory-get-started-3.png)
 
 5. For learning purposes, you can apply for a free trial license. [Simply fill the form here](https://jfrog.com/start-free/) and a license key will be delivered to your email in few minutes.
    
- <img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/Artifactory-License.pngg" width="936px" height="550px">
+![](./images/Artifactory-License.png)
 
-  <img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/artifactory-get-started-4.png" width="936px" height="550px"> 
+![](./images/artifactory-get-started-4.png)
 
 6. In exactly 1 minute, the license key had arrived. Simply copy the key and apply to the console.
 
-  <img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/artifactory-get-started-5.png" width="936px" height="550px">  
+![](./images/artifactory-get-started-5.png) 
 
 7. Set the Base URL. Ensure to use `https`
   
-  <img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/artifactory-get-started-6.png" width="936px" height="550px"> 
+![](./images/artifactory-get-started-6.png)
 
-8. Skip the Proxy setting 
-  <img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/artifactory-get-started-7.png" width="936px" height="550px">
+8. Skip the Proxy setting
+
+![](./images/artifactory-get-started-7.png)
    
 9. Skip creation of repositories for now. You will create them yourself later on.
       
-  <img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/artifactory-get-started-8.png" width="936px" height="550px">
+![](./images/artifactory-get-started-8.png)
 
 10. finish the setup
      
-   <img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/artifactory-get-started-9.png" width="936px" height="550px"> 
+![](./images/artifactory-get-started-9.png)
   
-<img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/artifactory-get-started-10.png" width="936px" height="550px">
+![](./images/artifactory-get-started-10.png)
 
 Next, its time to fix the TLS/SSL configuration so that we will have a trusted **HTTPS** URL
 
@@ -486,12 +520,15 @@ To see the list of trusted root Certification Authorities (CA) and their certifi
    
 2. Search for `security`
    
-     <img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/chrome-certificates-1.png" width="936px" height="550px">
-3. Select `Manage Certificates` 
-      <img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/chrome-certificates-2.png" width="936px" height="550px">
+![](./images/chrome-certificates-1.png)
+
+3. Select `Manage Certificates`
+
+![](./images/chrome-certificates-2.png)
+
 4. View the installed certificates in your browser
    
-<img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/chrome-certificates-3.png" width="936px" height="550px">
+![](./images/chrome-certificates-3.png)
 
 ## Certificate Management in Kubernetes
 
@@ -507,12 +544,14 @@ Similar to how Ingress Controllers are able to enable the creation of *Ingress* 
 
 It can issue certificates from a variety of supported sources, including [Let's Encrypt](https://letsencrypt.org/), [HashiCorp Vault](https://www.vaultproject.io/), and [Venafi](https://www.venafi.com/) as well as [private PKI](https://www.csoonline.com/article/3400836/what-is-pki-and-how-it-secures-just-about-everything-online.html). The issued certificates get stored as kubernetes secret which holds both the private key and public certificate.
 
-<img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/cert-manager-high-level-overview.svg" width="936px" height="550px">
+![](./images/cert-manager-high-level-overview.svg)
+
 In this project, We will use Let's Encrypt with cert-manager. The certificates issued by Let's Encrypt will work with most browsers because the root certificate that validates all it's certificates is called **“ISRG Root X1”** which is already trusted by most browsers and servers.
 
 You will find `ISRG Root X1` in the list of certificates already installed in your browser.
 
-<img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/chrome-certificates-4.png" width="936px" height="550px">
+![](./images/chrome-certificates-4.png)
+
 [Read the official documentation here](https://letsencrypt.org/docs/certificate-compatibility/)
 
 Cert-maanager will ensure certificates are valid and up to date, and attempt to renew certificates at a configured time before expiry.
@@ -524,7 +563,9 @@ Cert-manager works by having administrators create a resource in kubernetes call
 Whenever it is time to create a certificate for a specific host or website address, the process follows the pattern seen in the image below.
 
 ![](https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/cert-manager-1.png)
-<img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/cert-manager-1.png" width="936px" height="550px">
+
+![](./images/cert-manager-1.png)
+
 After we have deployed cert-manager, you will see all of this in action.
 
 ## Deploying Cert-manager 
@@ -692,7 +733,7 @@ The other section is `tls` where the host name that will require `https` is spec
 
 Redeploying the newly updated ingress will go through the process as shown below.
 
- <img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/cert-manager-1.png" width="936px" height="550px">
+![](./images/cert-manager-1.png)
 Once deployed, you can run the following commands to see each resource at each phase.
 
 - kubectl get certificaaterequest
@@ -713,31 +754,37 @@ Notice the secret name there in the above output.  Executing the command `kubect
 
 If you now head over to the browser, you should see the padlock sign without warnings of untrusted certificates.
 
- <img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/artifactory-tls-padlocked.png" width="936px" height="550px">
+![](./images/artifactory-tls-padlocked.png)
+
 Finally, one more task for you to do is to ensure that the LoadBalancer created for artifactory is destroyed. If you run a get service kubectl command like below;
 
 ```
 kubectl get service -n tools
 ```
- <img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/artifactory-nginx-service-output.png" width="936px" height="550px">
+![](./images/artifactory-nginx-service-output.png)
+
 You will see that the load balancer is still there. 
 
 A task for you is to update the helm values file for artifactory, and ensure that the `artifactory-artifactory-nginx` service uses `ClusterIP`
 
 Your final output should look like this.
 
- <img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/artifactory-nginx-service-output2.png" width="936px" height="550px">
+![](./images/artifactory-nginx-service-output2.png)
+
 Finally, update the ingress to use `artifactory-artifactory-nginx` as the backend service instead of using `artifactory`. Remember to update the port number as well.
 
 If everything goes well, you will be prompted at login to set the BASE URL. It will pick up the new `https` address. Simply click next 
 
- <img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/artifactory-get-started-11.png" width="936px" height="550px">
+![](./images/artifactory-get-started-11.png)
+
 Skip the `proxy` part of the setup.
 
-<img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/artifactory-get-started-12.png" width="936px" height="550px">
+![](./images/artifactory-get-started-12.png)
+
 Skip repositories creation because you will do this in the next poject.
 
-<img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project25/artifactory-get-started-13.png" width="936px" height="550px">
+![](./images/artifactory-get-started-13.png)
+
 Then complete the setup.
 
 Congratulations! for completing Project 25
