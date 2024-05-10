@@ -32,7 +32,8 @@ sudo mkdir /home/ubuntu/ansible-config-artifact
 
 3. Go to Jenkins web console -> Manage Jenkins -> Manage Plugins -> on `Available` tab search for `Copy Artifact` and install this plugin without restarting Jenkins
 
-<img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project12/copy_artifact_install.png" width="936px" height="550px">
+![](./images/copy_artifact_install.png)
+
 
 4. Create a new Freestyle project (you have done it in [Project 9](https://professional-pbl.darey.io/en/latest/project9.html)) and name it `save_artifacts`.
 
