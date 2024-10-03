@@ -19,7 +19,8 @@ You will build a secure infrastructure inside AWS [VPC (Virtual Private Cloud)](
 
 Cost, Security, and Scalability are the major requirements for this project. Hence, implementing the architecture designed below, ensure that infrastructure for both websites, WordPress and Tooling, is resilient to Web Server's failures, can accomodate to increased traffic and, at the same time, has reasonable cost.
 
-<img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project15/tooling_project_15.png" width="936px" height="550px">
+![](./images/tooling_project_15.png)
+
 #### Starting Off Your AWS Cloud Project
 
 There are few requirements that must be met before you begin:
@@ -279,7 +280,8 @@ Create other records such as [`CNAME`, `alias` and `A` records](https://docs.aws
 
 #### Congratulations! 
 
-<img src="https://darey-io-nonprod-pbl-projects.s3.eu-west-2.amazonaws.com/project15/awesome_15.png" width="936px" height="550px">
+![](./images/awesome_15.png)
+
 You have just created a secured, scalable and cost-effective infrastructure to host 2 enterprise websites using various Cloud services from AWS. At this point, your infrastructure is ready to host real websites' load. Since it is a pretty expensive infrastructure to keep it up and running, we are going to start using [Infrastructure as Code](https://en.wikipedia.org/wiki/Infrastructure_as_code) tool [Terraform](https://www.terraform.io) to easily provision and destroy this set up. 
 
 Move on for more amazing and challenging projects ahead!
